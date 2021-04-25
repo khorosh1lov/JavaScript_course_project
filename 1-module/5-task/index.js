@@ -1,3 +1,10 @@
 function truncate(str, maxlength) {
-  // ваш код...
+  const TAIL = '…';
+
+  if (str.length > maxlength) {
+    str = str.slice(0, maxlength - 1) + TAIL;
+    return str;
+  }
+
+  return str;
 }
