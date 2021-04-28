@@ -1,7 +1,3 @@
 function isEmpty(obj) {
-  for (let prop in obj) {
-    return !prop;
-  }
-
-  return true;
+  return Object.keys(obj).length === 0;
 }
