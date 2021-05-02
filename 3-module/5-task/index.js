@@ -1,7 +1,9 @@
+const REGEX = /,| /;
+
 function getMinMax(str) {
   let numbersFromStr = str
-    .split(/,| /)
-    .filter(item => { return Number(item) });
+    .split(REGEX)
+    .filter(item => { return isFinite(item) });
 
   return {
     min: Math.min(...numbersFromStr),
