@@ -1,3 +1,12 @@
+const REGEX = /,| /;
+
 function getMinMax(str) {
-  // ваш код...
+  let numbersFromStr = str
+    .split(REGEX)
+    .filter(item => { return isFinite(item) });
+
+  return {
+    min: Math.min(...numbersFromStr),
+    max: Math.max(...numbersFromStr)
+  }
 }
