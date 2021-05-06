@@ -1,12 +1,8 @@
 function makeFriendsList(arr) {
   const friendsList = document.createElement('ul');
-  const data = arr.map(({ firstName, lastName }) => `<li>${firstName} ${lastName}</li>`);
+  const data = arr.map(({ firstName, lastName }) => `<li>${firstName} ${lastName}</li>`).join('');
 
-  for (let i = 0; i < data.length; i++) {
-    // friendsList.innerHTML += data[i];
-    // OR
-    friendsList.insertAdjacentHTML('beforeEnd', data[i]);
-  }
+  friendsList.insertAdjacentHTML('beforeEnd', data);
 
   return friendsList;
 }
