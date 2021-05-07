@@ -1,23 +1,33 @@
 function highlight(table) {
   // Get all tbody rows to apply styles/changes
   const rows = table.querySelectorAll('tbody tr');
-  // Get all last cells with Status
-  const status = table.querySelectorAll('tbody tr > td:last-child');
 
-  for (let i = 0; i < rows.length; i++) {
-    const currentUser = rows[i];
-    const cells = [...rows[i].cells];
+  const AGE = 1;
+  const GENDER = 2;
+  const STATUS = 3;
 
-    for (let j = 0; j < cells.length; j++) {
-      const data = cells[j];
+  for (const row of rows) {
+    const cells = [...row.cells];
 
-      if (+data.textContent < 18) { currentUser.style.textDecoration = 'line-through'; }
-      if (data.textContent === 'm') { currentUser.classList.add('male'); }
-      if (data.textContent === 'f') { currentUser.classList.add('female'); }
-      if (data.dataset.available === 'true') { currentUser.classList.add('available'); }
-      if (data.dataset.available === 'false') { currentUser.classList.add('unavailable'); }
-    }
+    cells.forEach((td, index) => {
+      switch (index) {
 
-    if (!status[i].hasAttribute('data-available')) { currentUser.setAttribute('hidden', ''); }
+      case AGE:
+        if (+td.textContent < 18) { row.style.textDecoration = 'line-through'; }
+        break;
+
+      case GENDER:
+        if (td.textContent === 'm') { row.classList.add('male'); }
+        if (td.textContent === 'f') { row.classList.add('female'); }
+        break;
+
+      case STATUS:
+        if (td.dataset.available === 'true') { row.classList.add('available'); }
+        if (td.dataset.available === 'false') { row.classList.add('unavailable'); }
+        if (!td.hasAttribute('data-available')) { row.setAttribute('hidden', ''); }
+        break;
+      }
+    });
   }
+
 }
