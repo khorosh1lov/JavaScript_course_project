@@ -9,8 +9,8 @@ function highlight(table) {
   for (const row of rows) {
     const cells = [...row.cells];
 
-    cells.forEach((td, index) => {
-      switch (index) {
+    cells.forEach((cell, index) => {
+      /*switch (index) {
 
       case AGE:
         if (+td.textContent < 18) { row.style.textDecoration = 'line-through'; }
@@ -26,7 +26,44 @@ function highlight(table) {
         if (td.dataset.available === 'false') { row.classList.add('unavailable'); }
         if (!td.hasAttribute('data-available')) { row.setAttribute('hidden', ''); }
         break;
+      }*/
+
+      function checkCell (index) {
+        let column = {
+          [AGE]: function () {
+            if (+cell.textContent < 18) {
+              return row.style.textDecoration = 'line-through';
+            }
+          },
+          [GENDER]: function () {
+            if (cell.textContent === 'm') {
+              return row.classList.add('male');
+            }
+            if (cell.textContent === 'f') {
+              return row.classList.add('female');
+            }
+          },
+          [STATUS]: function () {
+            if (cell.dataset.available === 'true') {
+              return row.classList.add('available');
+            }
+            if (cell.dataset.available === 'false') {
+              return row.classList.add('unavailable');
+            }
+            if (!cell.hasAttribute('data-available')) {
+              return row.setAttribute('hidden', '');
+            }
+          },
+
+          'default': function () {
+            return;
+          }
+        };
+
+        return (column[index] || column['default'])();
       }
+
+      checkCell(index);
     });
   }
 
