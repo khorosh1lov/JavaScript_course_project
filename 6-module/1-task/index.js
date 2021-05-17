@@ -56,18 +56,18 @@ export default class UserTable {
     this.elem.setAttribute('data-component', 'tableOfUsers');
     this.elem.innerHTML = tableContainerTemplate(this._users);
 
-    this.elem.addEventListener('click', this._onUserTableContainerClick);
-  }
-
-  set elem(elem) {
-    return this._elem = elem;
+    this.elem.addEventListener('click', this._onUserRemoveButtonClick);
   }
 
   get elem() {
     return this._elem;
   }
 
-  _onUserTableContainerClick = (e) => {
+  set elem(value) {
+    this._elem = value;
+  }
+
+  _onUserRemoveButtonClick = (e) => {
     const target = e.target;
     if (target.dataset.action !== 'remove') {
       return;
