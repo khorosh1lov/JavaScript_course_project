@@ -29,24 +29,31 @@ export default class ProductCard {
     this._image = image;
     this._id = id;
 
-    this.elem = document.createElement('div');
+    this.elem = createElement(cardTemplate({
+      name: this._name,
+      price: this._price,
+      image: this._image
+    }));
+
     this.elem.classList.add('card');
     this.elem.setAttribute('data-component', 'productCard');
 
-    this.elem.innerHTML = cardTemplate({
+    /*this.elem.innerHTML = cardTemplate({
       name: this._name,
       price: this._price,
       image: this._image,
-    });
+    });*/
 
     this._addButton = this.elem.querySelector('[data-action="add"]');
-    this._addButton.addEventListener('click', () => {
-      let event = new CustomEvent("product-add", {
-        detail: this._id,
-        bubbles: true
-      });
+    this._addButton.addEventListener('click', this._onAddButtonClick);
+  }
 
-      this.elem.dispatchEvent(event);
+  _onAddButtonClick = () => {
+    let event = new CustomEvent("product-add", {
+      detail: this._id,
+      bubbles: true
     });
+
+    this.elem.dispatchEvent(event);
   }
 }
