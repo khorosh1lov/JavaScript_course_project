@@ -54,18 +54,26 @@ export default class UserTable {
 
     this.elem = document.createElement('table');
     this.elem.setAttribute('data-component', 'tableOfUsers');
-
-    this.elem.addEventListener('click', (e) => {
-      const target = e.target;
-      if (target.dataset.action !== 'remove') {
-        return;
-      }
-
-      const user = target.closest(`tr`);
-      user.remove();
-    });
-
     this.elem.innerHTML = tableContainerTemplate(this._users);
+
+    this.elem.addEventListener('click', this._onUserTableContainerClick);
   }
 
+  set elem(elem) {
+    return this._elem = elem;
+  }
+
+  get elem() {
+    return this._elem;
+  }
+
+  _onUserTableContainerClick = (e) => {
+    const target = e.target;
+    if (target.dataset.action !== 'remove') {
+      return;
+    }
+
+    const user = target.closest(`tr`);
+    user.remove();
+  }
 }
