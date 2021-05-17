@@ -1,6 +1,7 @@
 import createElement from '../../assets/lib/create-element.js';
 
 const PRODUCTS_IMGS_PATH = '/assets/images/products/';
+const PRODUCT_ADD_EVENT = 'product-add';
 
 function cardTemplate({ name = 'Product', price = 0, image = '' } = {}) {
   return `
@@ -50,7 +51,7 @@ export default class ProductCard {
   }
 
   _onAddButtonClick = () => {
-    let event = new CustomEvent("product-add", {
+    let event = new CustomEvent(PRODUCT_ADD_EVENT, {
       detail: this._id,
       bubbles: true
     });
