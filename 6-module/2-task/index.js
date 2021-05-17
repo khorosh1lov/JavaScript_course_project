@@ -4,6 +4,7 @@ const PRODUCTS_IMGS_PATH = '/assets/images/products/';
 
 function cardTemplate({ name = 'Product', price = 0, image = '' } = {}) {
   return `
+  <div class="card">
     <div class="card__top">
       <img src="${PRODUCTS_IMGS_PATH + image}" class="card__image" alt="product">
       <span class="card__price">€${price.toFixed(2)}</span>
@@ -11,7 +12,8 @@ function cardTemplate({ name = 'Product', price = 0, image = '' } = {}) {
     <div class="card__body">
       <div class="card__title">${name}</div>
       ${addButtonTemplate()}
-    </div>`;
+    </div>
+  </div>`;
 }
 
 function addButtonTemplate() {
@@ -35,17 +37,16 @@ export default class ProductCard {
       image: this._image
     }));
 
-    this.elem.classList.add('card');
-    this.elem.setAttribute('data-component', 'productCard');
-
-    /*this.elem.innerHTML = cardTemplate({
-      name: this._name,
-      price: this._price,
-      image: this._image,
-    });*/
-
     this._addButton = this.elem.querySelector('[data-action="add"]');
     this._addButton.addEventListener('click', this._onAddButtonClick);
+  }
+
+  get elem() {
+    return this._elem;
+  }
+
+  set elem(value) {
+    this._elem = value;
   }
 
   _onAddButtonClick = () => {
