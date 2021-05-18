@@ -46,13 +46,13 @@ function arrowsTemplate() {
 export default class Carousel {
   constructor(slides) {
     this._slides = slidesDataTemplate(slides);
-    this.elem    = createElement(carouselContainerTemplate(this._slides));
+    this._elem    = createElement(carouselContainerTemplate(this._slides));
 
-    this._carousel       = this.elem.querySelector('.carousel__inner');
-    this._arrowLeft      = this.elem.querySelector('.carousel__arrow_left');
-    this._arrowRight     = this.elem.querySelector('.carousel__arrow_right');
-    this._totalSlides    = this.elem.querySelectorAll('.carousel__slide').length;
-    this._addButtons     = this.elem.querySelectorAll('[data-action="add"]');
+    this._carousel       = this._elem.querySelector('.carousel__inner');
+    this._arrowLeft      = this._elem.querySelector('.carousel__arrow_left');
+    this._arrowRight     = this._elem.querySelector('.carousel__arrow_right');
+    this._totalSlides    = this._elem.querySelectorAll('.carousel__slide').length;
+    this._addButtons     = this._elem.querySelectorAll('[data-action="add"]');
     this._slidePosition  = 0;
 
     if (this._totalSlides <= 1) { this._disableArrows(this._arrowLeft, this._arrowRight); }
@@ -68,10 +68,6 @@ export default class Carousel {
 
   get elem() {
     return this._elem;
-  }
-
-  set elem(value) {
-    this._elem = value;
   }
 
   _checkSlidePosition = () => {
@@ -112,6 +108,6 @@ export default class Carousel {
       detail: id,
       bubbles: true
     });
-    this.elem.dispatchEvent(event);
+    this._elem.dispatchEvent(event);
   }
 }
