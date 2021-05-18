@@ -32,22 +32,18 @@ export default class ProductCard {
     this._image = image;
     this._id = id;
 
-    this.elem = createElement(cardTemplate({
+    this._elem = createElement(cardTemplate({
       name: this._name,
       price: this._price,
       image: this._image
     }));
 
-    this._addButton = this.elem.querySelector('[data-action="add"]');
+    this._addButton = this._elem.querySelector('[data-action="add"]');
     this._addButton.addEventListener('click', this._onAddButtonClick);
   }
 
   get elem() {
     return this._elem;
-  }
-
-  set elem(value) {
-    this._elem = value;
   }
 
   _onAddButtonClick = () => {
@@ -56,6 +52,6 @@ export default class ProductCard {
       bubbles: true
     });
 
-    this.elem.dispatchEvent(event);
+    this._elem.dispatchEvent(event);
   }
 }
