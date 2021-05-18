@@ -52,19 +52,15 @@ export default class UserTable {
   constructor(rows) {
     this._users = usersDataTemplate(rows);
 
-    this.elem = document.createElement('table');
-    this.elem.setAttribute('data-component', 'tableOfUsers');
-    this.elem.innerHTML = tableContainerTemplate(this._users);
+    this._elem = document.createElement('table');
+    this._elem.setAttribute('data-component', 'tableOfUsers');
+    this._elem.innerHTML = tableContainerTemplate(this._users);
 
-    this.elem.addEventListener('click', this._onUserRemoveButtonClick);
+    this._elem.addEventListener('click', this._onUserRemoveButtonClick);
   }
 
   get elem() {
     return this._elem;
-  }
-
-  set elem(value) {
-    this._elem = value;
   }
 
   _onUserRemoveButtonClick = (e) => {
