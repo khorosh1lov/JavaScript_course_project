@@ -25,8 +25,8 @@ export default class Modal {
     this._body        = this._modal.querySelector('.modal__body');
     this._closeButton = this._modal.querySelector('.modal__close');
 
-    this._closeButton.addEventListener('click', this._onCloseButtonClick);
-    document.addEventListener('keydown', this._onEscButtonPressed);
+    this._closeButton.addEventListener('click', this._onCloseButtonClick, { once: true });
+    document.addEventListener('keydown', this._onEscButtonPressed, { once: true });
   }
 
   _onCloseButtonClick = () => {
