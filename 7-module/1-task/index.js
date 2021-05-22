@@ -79,9 +79,7 @@ export default class RibbonMenu {
   _onClickArrowRightButton = () => {
     this._ribbonInner.scrollBy(SCROLL_RANGE, 0);
 
-    this._ribbonInner.addEventListener('scroll', () => {
-      this._checkRibbonScroll();
-    });
+    this._ribbonInner.addEventListener('scroll', this._checkRibbonScroll);
   }
 
   _checkRibbonScroll = () => {
@@ -104,7 +102,7 @@ export default class RibbonMenu {
     e.preventDefault();
 
     const item = e.target;
-    const itemId = item.closest(`a`).dataset.id;
+    const itemId = item.dataset.id;
 
     this._ribbonItems.forEach(item => { item.classList.remove('ribbon__item_active'); });
     item.classList.add('ribbon__item_active');
