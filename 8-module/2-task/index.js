@@ -10,33 +10,40 @@ function gridTemplate() {
 
 export default class ProductGrid {
   constructor(products) {
-    this._allProducts = products;
+    this._products = products;
+    this._filters = {};
     this._elem = createElement(gridTemplate());
-    this._inner = this._elem.querySelector('.products-grid__inner');
-
-    for (const product of products) {
-      const CardOfProduct = new ProductsWithFilters(product);
-
-      this._inner.append(CardOfProduct.elem);
-    }
+    this.render(this._products);
   }
 
   get elem() {
     return this._elem;
   }
 
-  updateFilter({ noNuts = false, vegeterianOnly = false, maxSpiciness = 0, category = '' }) {
-    this._noNuts = noNuts;
-    this._vegeterianOnly = vegeterianOnly;
-    this._maxSpiciness = maxSpiciness;
-    this._category = category;
+  render(products) {
+    this._inner = this._elem.querySelector('.products-grid__inner');
+    this._inner.innerHTML = '';
 
-    this._allProducts.forEach(item => {
-      if (item.nuts === this._noNuts) { console.log(item); }
-      //if (item.vegeterian === this._vegeterianOnly) { console.log(item); }
-      //if (item.spiciness <= this._maxSpiciness) { console.log(item); }
-      if (item.category === this._category) { console.log(item); }
-    });
+    for (const product of products) {
+      const CardOfProduct = new ProductsWithFilters(product);
+      this._inner.append(CardOfProduct.elem);
+    }
+  }
+
+  updateFilter(filters) {
+    Object.assign(this._filters, filters);
+
+    if ("noNuts" in this._filters) {
+      const noNutsProducts = this._products.filter(product => product.nuts === this._filters.noNuts);
+      this.render([...noNutsProducts]);
+    } else {
+      this.render(this._products);
+    }
+
+
+
+    const vegeterianOnlyProducts = this._products.filter(product => product.vegeterian === this._filters.vegeterianOnly);
+
   }
 }
 

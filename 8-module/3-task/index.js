@@ -6,7 +6,10 @@ export default class Cart {
   }
 
   addProduct(product) {
-    // ваш код
+    let AddProduct = Object.assign({}, product);
+    this.cartItems.push(AddProduct);
+
+    this.onProductUpdate();
   }
 
   updateProductCount(productId, amount) {
@@ -14,19 +17,21 @@ export default class Cart {
   }
 
   isEmpty() {
-    // ваш код
+    return this.cartItems.length === 0;
   }
 
   getTotalCount() {
-    // ваш код
+    return this.cartItems.length;
   }
 
   getTotalPrice() {
-    // ваш код
+    return this.cartItems.reduce((totalPrice, product) => totalPrice + product.price, 0);
   }
 
-  onProductUpdate(cartItem) {
+  onProductUpdate() {
     // реализуем в следующей задаче
+
+    console.log(this.cartItems);
 
     this.cartIcon.update(this);
   }
