@@ -12,31 +12,56 @@ export default class Cart {
     this.addEventListeners();
   }
 
+  _findProductByName = (product) => {
+    return this.cartItems.find(item => item.product.name === product.name);
+  };
+
+  _findProductById = (productId) => {
+    return this.cartItems.find(item => item.product.id === productId);
+  };
+
+  _findProductIndexById = (productId) => {
+    return this.cartItems.findIndex(item => item.product.id === productId);
+  };
+
   addProduct(product) {
-    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД
+    const existingProduct = this._findProductByName(product);
+    const cartItem = Object.assign({}, { product: product, count: 1 });
+
+    if (!existingProduct) {
+      this.cartItems.push(cartItem);
+    } else {
+      existingProduct.count++;
+    }
+
+    this.onProductUpdate(cartItem);
   }
 
   updateProductCount(productId, amount) {
-    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД
+    const existingProduct = this._findProductById(productId);
+    const indexOfExistingProduct = this._findProductIndexById(productId);
+
+    if (existingProduct) { existingProduct.count += amount; } else { return; }
+    if (existingProduct.count === 0) { this.cartItems.splice(indexOfExistingProduct, 1); }
+
+    this.onProductUpdate(existingProduct);
   }
 
   isEmpty() {
-    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД
+    return this.cartItems.length === 0;
   }
 
   getTotalCount() {
-    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД
+    return this.cartItems.reduce((total, item) => total + item.count, 0);
   }
 
   getTotalPrice() {
-    // СКОПИРУЙТЕ СЮДЯ СВОЙ КОД
+    return this.cartItems.reduce((total, item) => total + (item.product.price * item.count), 0);
   }
 
   renderProduct(product, count) {
-    return createElement(`
-    <div class="cart-product" data-product-id="${
-      product.id
-    }">
+    return `
+    <div class="cart-product" data-product-id="${product.id}">
       <div class="cart-product__img">
         <img src="/assets/images/products/${product.image}" alt="product">
       </div>
@@ -52,14 +77,14 @@ export default class Cart {
               <img src="/assets/images/icons/square-plus-icon.svg" alt="plus">
             </button>
           </div>
-          <div class="cart-product__price">€${product.price.toFixed(2)}</div>
+          <div class="cart-product__price">€${(product.price * count).toFixed(2)}</div>
         </div>
       </div>
-    </div>`);
+    </div>`;
   }
 
   renderOrderForm() {
-    return createElement(`<form class="cart-form">
+    return `<form class="cart-form">
       <h5 class="cart-form__title">Delivery</h5>
       <div class="cart-form__group cart-form__group_row">
         <input name="name" type="text" class="cart-form__input" placeholder="Name" required value="Santa Claus">
@@ -73,29 +98,65 @@ export default class Cart {
         <div class="cart-buttons__buttons btn-group">
           <div class="cart-buttons__info">
             <span class="cart-buttons__info-text">total</span>
-            <span class="cart-buttons__info-price">€${this.getTotalPrice().toFixed(
-              2
-            )}</span>
+            <span class="cart-buttons__info-price">€${this.getTotalPrice().toFixed(2)}</span>
           </div>
           <button type="submit" class="cart-buttons__button btn-group__button button">order</button>
         </div>
       </div>
-    </form>`);
+    </form>`;
   }
 
   renderModal() {
-    // ...ваш код
+    let modal = new Modal();
+    let products = ``;
+
+    for (const cartItem of this.cartItems) {
+      products += this.renderProduct(cartItem.product, cartItem.count);
+    }
+
+    modal.setTitle('Your order');
+    modal.setBody(createElement(`
+    <div>
+      ${products}
+
+      ${this.renderOrderForm()}
+    </div>`));
+
+    modal.open();
+
+    //// НЕ ПОНЯТНО, когда цеплятб обработчики на кнопки, я тут слегка из за кол-ва методов запутался
+    /*
+    const plusButton = document.querySelector('cart-counter__button_plus');
+    const minusButton = document.querySelector('cart-counter__button_minus');
+
+    plusButton.addEventListener('click', _onPlusButtonClick);
+    minusButton.addEventListener('click', _onMinusButtonClick);
+    */
   }
 
   onProductUpdate(cartItem) {
-    // ...ваш код
-
     this.cartIcon.update(this);
+
+    const isModalOpen = document.body.classList.contains('is-modal-open');
+    const productId = cartItem.product.id;
+
+    if (isModalOpen) {
+
+      /// ОБЩИЙ КАРКАС сделал, но пока не понятно когда этот метод onProductUpdate() и где вызывать
+    }
   }
 
   onSubmit(event) {
     // ...ваш код
-  };
+  }
+
+  _onPlusButtonClick = () => {
+    console.log('Plus Clicked!');
+  }
+
+  _onMinusButtonClick = () => {
+    console.log('Minus Clicked!');
+  }
 
   addEventListeners() {
     this.cartIcon.elem.onclick = () => this.renderModal();

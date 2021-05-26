@@ -50,7 +50,7 @@ export default class CartIcon {
     const fixedCart = {
       position: 'fixed',
       top: '50px',
-      zIndex: 1000,
+      zIndex: 999,
       right: '10px',
       left: leftIndent
     };
