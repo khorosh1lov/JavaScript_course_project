@@ -10,49 +10,45 @@ function gridTemplate() {
 
 export default class ProductGrid {
   constructor(products) {
-    this._products = products;
-    this._filters = {};
-    this._elem = createElement(gridTemplate());
-    this.render(this._products);
+    this.products = products;
+    this.filters = {};
+    this.render();
   }
 
-  get elem() {
-    return this._elem;
+  render() {
+    this.elem = createElement(gridTemplate());
+    this.renderContent();
   }
 
-  render(products) {
-    this._inner = this._elem.querySelector('.products-grid__inner');
-    this._inner.innerHTML = '';
+  renderContent() {
+    this.sub('inner').innerHTML = '';
 
-    for (const product of products) {
-      const CardOfProduct = new ProductsWithFilters(product);
-      this._inner.append(CardOfProduct.elem);
+    for (let product of this.products) {
+      if (this.filters.noNuts && product.nuts) {continue;}
+
+      if (this.filters.vegeterianOnly && !product.vegeterian) {continue;}
+
+      if (this.filters.maxSpiciness !== undefined && product.spiciness > this.filters.maxSpiciness) {
+        continue;
+      }
+
+      if (this.filters.category && product.category != this.filters.category) {
+        continue;
+      }
+
+      let card = new ProductCard(product);
+      this.sub("inner").append(card.elem);
     }
   }
 
   updateFilter(filters) {
-    Object.assign(this._filters, filters);
-
-    if ("noNuts" in this._filters) {
-      const noNutsProducts = this._products.filter(product => product.nuts === this._filters.noNuts);
-      this.render([...noNutsProducts]);
-    } else {
-      this.render(this._products);
-    }
-
-
-
-    const vegeterianOnlyProducts = this._products.filter(product => product.vegeterian === this._filters.vegeterianOnly);
-
+    Object.assign(this.filters, filters);
+    this.renderContent();
   }
-}
 
-class ProductsWithFilters extends ProductCard {
-  constructor({ name, price, category, image, id, vegeterian = false, nuts = false, spiciness = 0 }) {
-    super({ name, price, category, image, id });
-    this._vegeterian = vegeterian;
-    this._nuts = nuts;
-    this._spiciness = spiciness;
+  sub(ref) {
+    return this.elem.querySelector(`.products-grid__${ref}`);
   }
+
 }
 
