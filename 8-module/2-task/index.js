@@ -1,6 +1,13 @@
 import createElement from '../../assets/lib/create-element.js';
 import ProductCard from '../../6-module/2-task/index.js';
 
+function gridTemplate() {
+  return `
+    <div class="products-grid">
+      <div class="products-grid__inner"></div>
+    </div>`;
+}
+
 export default class ProductGrid {
   constructor(products) {
     this.products = products;
@@ -9,10 +16,7 @@ export default class ProductGrid {
   }
 
   render() {
-    this.elem = createElement(`<div class="products-grid">
-      <div class="products-grid__inner"></div>
-    </div>`);
-
+    this.elem = createElement(gridTemplate());
     this.renderContent();
   }
 
@@ -47,3 +51,4 @@ export default class ProductGrid {
   }
 
 }
+

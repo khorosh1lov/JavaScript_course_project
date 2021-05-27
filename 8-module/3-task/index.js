@@ -1,34 +1,61 @@
 export default class Cart {
-  cartItems = []; // [product: {...}, count: N]
+  cartItems = []; // [ product: {...}, count: N ]
 
   constructor(cartIcon) {
     this.cartIcon = cartIcon;
   }
 
   addProduct(product) {
-    // ваш код
+    const existingProduct = this._findProductByName(product);
+    const cartItem = { product: product, count: 1 };
+
+    if (!existingProduct) {
+      this.cartItems.push(cartItem);
+    } else {
+      existingProduct.count++;
+    }
+
+    this.onProductUpdate(cartItem);
   }
 
   updateProductCount(productId, amount) {
-    // ваш код
+    const existingProduct = this._findProductById(productId);
+    const indexOfExistingProduct = this._findProductIndexById(productId);
+
+    if (!existingProduct) { return; } else { existingProduct.count += amount; }
+    if (existingProduct.count === 0) { this.cartItems.splice(indexOfExistingProduct, 1); }
+
+    this.onProductUpdate(existingProduct);
   }
 
   isEmpty() {
-    // ваш код
+    return this.cartItems.length === 0;
   }
 
   getTotalCount() {
-    // ваш код
+    return this.cartItems.reduce((total, item) => total + item.count, 0);
   }
 
   getTotalPrice() {
-    // ваш код
+    return this.cartItems.reduce((total, item) => total + (item.product.price * item.count), 0);
   }
 
-  onProductUpdate(cartItem) {
+  onProductUpdate() {
     // реализуем в следующей задаче
 
     this.cartIcon.update(this);
   }
+
+  _findProductByName = (product) => {
+    return this.cartItems.find(item => item.product.name === product.name);
+  };
+
+  _findProductById = (productId) => {
+    return this.cartItems.find(item => item.product.id === productId);
+  };
+
+  _findProductIndexById = (productId) => {
+    return this.cartItems.findIndex(item => item.product.id === productId);
+  };
 }
 
