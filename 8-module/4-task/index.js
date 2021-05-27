@@ -13,7 +13,7 @@ export default class Cart {
 
   addProduct(product) {
     const existingProduct = this._findProductByName(product);
-    const cartItem = Object.assign({}, { product: product, count: 1 });
+    const cartItem = { product: product, count: 1 };
 
     if (!existingProduct) {
       this.cartItems.push(cartItem);
@@ -28,7 +28,7 @@ export default class Cart {
     const existingProduct = this._findProductById(productId);
     const indexOfExistingProduct = this._findProductIndexById(productId);
 
-    if (existingProduct) { existingProduct.count += amount; } else { return; }
+    if (!existingProduct) { return; } else { existingProduct.count += amount; }
     if (existingProduct.count === 0) { this.cartItems.splice(indexOfExistingProduct, 1); }
 
     this.onProductUpdate(existingProduct);
@@ -93,23 +93,23 @@ export default class Cart {
     </form>`;
   }
 
-  renderModal() {
-    let modal = new Modal();
+  renderModal = () => {
+    this.modal = new Modal();
     let products = ``;
 
     for (const cartItem of this.cartItems) {
       products += this.renderProduct(cartItem.product, cartItem.count);
     }
 
-    modal.setTitle('Your order');
-    modal.setBody(createElement(`
+    this.modal.setTitle('Your order');
+    this.modal.setBody(createElement(`
     <div>
       ${products}
 
       ${this.renderOrderForm()}
     </div>`));
 
-    modal.open();
+    this.modal.open();
 
     const plusButtons = document.querySelectorAll('.cart-counter__button_plus');
     const minusButtons = document.querySelectorAll('.cart-counter__button_minus');
@@ -123,11 +123,9 @@ export default class Cart {
   onProductUpdate = (cartItem) => {
     this.cartIcon.update(this);
 
-    const modal = document.querySelector('.modal');
     const isModalOpen = document.body.classList.contains('is-modal-open');
     const productId = cartItem.product.id;
 
-    ////------------------- Не понимаю как тут обновлять даныне в модалке ----------------////
     if (isModalOpen) {
       const modalBody = document.querySelector('.modal__body');
 
@@ -141,48 +139,42 @@ export default class Cart {
       infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
 
       if (cartItem.count === 0) {
-        document.body.classList.remove('is-modal-open');
-        modal.remove();
+        this.modal.close();
       }
     }
   }
 
-  onSubmit = (event) => {
+  onSubmit = async (event) => {
     event.preventDefault();
 
     const modalTitle = document.querySelector('.modal__title');
     const modalBody = document.querySelector('.modal__body');
+
     const form = event.currentTarget;
+    const formData = new FormData(form);
     const submitButton = form.querySelector('[type="submit"]');
     submitButton.classList.add('is-loading');
 
-    const formData = new FormData(form);
-
-    const responseReceived = fetch('https://httpbin.org/post', {
+    const response = await fetch('https://httpbin.org/post', {
       body: formData,
       method: 'POST',
     });
 
-    responseReceived.then(response => {
-      modalTitle.innerHTML = 'Success!';
-      modalBody.innerHTML = `
-      <div class="modal__body-inner">
-        <p>
-          Order successful! Your order is being cooked :) <br>
-          We’ll notify you about delivery time shortly.<br>
-          <img src="/assets/images/delivery.gif">
-        </p>
-      </div>
-      `;
+    modalTitle.innerHTML = 'Success!';
+    modalBody.innerHTML = `
+    <div class="modal__body-inner">
+      <p>
+        Order successful! Your order is being cooked :) <br>
+        We’ll notify you about delivery time shortly.<br>
+        <img src="/assets/images/delivery.gif">
+      </p>
+    </div>
+    `;
 
-      this.cartItems = [];
-      this.cartIcon.update(this);
+    this.cartItems = [];
+    this.cartIcon.update(this);
 
-      console.log(response);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    console.log(response);
   }
 
   addEventListeners() {
