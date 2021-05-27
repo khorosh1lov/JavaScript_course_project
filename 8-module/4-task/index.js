@@ -138,7 +138,7 @@ export default class Cart {
     }
   }
 
-  onSubmit(event) {
+  onSubmit = (event) => {
     event.preventDefault();
 
     const modalTitle = document.querySelector('.modal__title');
@@ -146,8 +146,6 @@ export default class Cart {
     const form = event.currentTarget;
     const submitButton = form.querySelector('[type="submit"]');
     submitButton.classList.add('is-loading');
-
-    console.log(form);
 
     const formData = new FormData(form);
 
@@ -168,12 +166,10 @@ export default class Cart {
       </div>
       `;
 
-      ////------------------- Не понимаю как тут удалить всё и обновить иконку корзины --------------////
       this.cartItems = [];
       this.cartIcon.update(this);
 
       console.log(response);
-      console.log(this.cartItems);
     })
     .catch((err) => {
       console.log(err);
