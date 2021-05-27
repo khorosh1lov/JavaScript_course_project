@@ -7,7 +7,7 @@ export default class Cart {
 
   addProduct(product) {
     const existingProduct = this._findProductByName(product);
-    const cartItem = Object.assign({}, { product: product, count: 1 });
+    const cartItem = { product: product, count: 1 };
 
     if (!existingProduct) {
       this.cartItems.push(cartItem);
@@ -22,7 +22,7 @@ export default class Cart {
     const existingProduct = this._findProductById(productId);
     const indexOfExistingProduct = this._findProductIndexById(productId);
 
-    if (existingProduct) { existingProduct.count += amount; } else { return; }
+    if (!existingProduct) { return; } else { existingProduct.count += amount; }
     if (existingProduct.count === 0) { this.cartItems.splice(indexOfExistingProduct, 1); }
 
     this.onProductUpdate(existingProduct);
