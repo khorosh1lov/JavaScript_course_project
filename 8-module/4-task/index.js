@@ -123,13 +123,13 @@ export default class Cart {
   onProductUpdate = (cartItem) => {
     this.cartIcon.update(this);
 
+    const modal = document.querySelector('.modal');
     const isModalOpen = document.body.classList.contains('is-modal-open');
     const productId = cartItem.product.id;
 
     ////------------------- Не понимаю как тут обновлять даныне в модалке ----------------////
     if (isModalOpen) {
       const modalBody = document.querySelector('.modal__body');
-      const currentProduct = modalBody.querySelector(`[data-product-id="${productId}"]`);
 
       let productCount = modalBody.querySelector(`[data-product-id="${productId}"] .cart-counter__count`);
       productCount.innerHTML = cartItem.count;
@@ -140,7 +140,10 @@ export default class Cart {
       let infoPrice = modalBody.querySelector(`.cart-buttons__info-price`);
       infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
 
-      if (cartItem.count === 0) { currentProduct.remove(); }
+      if (cartItem.count === 0) {
+        document.body.classList.remove('is-modal-open');
+        modal.remove();
+      }
     }
   }
 
