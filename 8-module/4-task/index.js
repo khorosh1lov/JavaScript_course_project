@@ -120,7 +120,7 @@ export default class Cart {
     form.addEventListener('submit', this.onSubmit);
   }
 
-  onProductUpdate(cartItem) {
+  onProductUpdate = (cartItem) => {
     this.cartIcon.update(this);
 
     const isModalOpen = document.body.classList.contains('is-modal-open');
@@ -129,12 +129,18 @@ export default class Cart {
     ////------------------- Не понимаю как тут обновлять даныне в модалке ----------------////
     if (isModalOpen) {
       const modalBody = document.querySelector('.modal__body');
+      const currentProduct = modalBody.querySelector(`[data-product-id="${productId}"]`);
 
       let productCount = modalBody.querySelector(`[data-product-id="${productId}"] .cart-counter__count`);
+      productCount.innerHTML = cartItem.count;
 
       let productPrice = modalBody.querySelector(`[data-product-id="${productId}"] .cart-product__price`);
+      productPrice.innerHTML = `€${(cartItem.product.price * cartItem.count).toFixed(2)}`;
 
       let infoPrice = modalBody.querySelector(`.cart-buttons__info-price`);
+      infoPrice.innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
+
+      if (cartItem.count === 0) { currentProduct.remove(); }
     }
   }
 
