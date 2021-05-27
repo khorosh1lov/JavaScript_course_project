@@ -8,21 +8,8 @@ export default class Cart {
 
   constructor(cartIcon) {
     this.cartIcon = cartIcon;
-
     this.addEventListeners();
   }
-
-  _findProductByName = (product) => {
-    return this.cartItems.find(item => item.product.name === product.name);
-  };
-
-  _findProductById = (productId) => {
-    return this.cartItems.find(item => item.product.id === productId);
-  };
-
-  _findProductIndexById = (productId) => {
-    return this.cartItems.findIndex(item => item.product.id === productId);
-  };
 
   addProduct(product) {
     const existingProduct = this._findProductByName(product);
@@ -124,14 +111,13 @@ export default class Cart {
 
     modal.open();
 
-    //// НЕ ПОНЯТНО, когда цеплятб обработчики на кнопки, я тут слегка из за кол-ва методов запутался
-    /*
-    const plusButton = document.querySelector('cart-counter__button_plus');
-    const minusButton = document.querySelector('cart-counter__button_minus');
+    const plusButtons = document.querySelectorAll('.cart-counter__button_plus');
+    const minusButtons = document.querySelectorAll('.cart-counter__button_minus');
 
-    plusButton.addEventListener('click', _onPlusButtonClick);
-    minusButton.addEventListener('click', _onMinusButtonClick);
-    */
+    this._inModalButtonsController([...plusButtons, ...minusButtons]);
+
+    const form = document.querySelector('.cart-form');
+    form.addEventListener('submit', this.onSubmit);
   }
 
   onProductUpdate(cartItem) {
@@ -140,26 +126,97 @@ export default class Cart {
     const isModalOpen = document.body.classList.contains('is-modal-open');
     const productId = cartItem.product.id;
 
+    ////------------------- Не понимаю как тут обновлять даныне в модалке ----------------////
     if (isModalOpen) {
+      const modalBody = document.querySelector('.modal__body');
 
-      /// ОБЩИЙ КАРКАС сделал, но пока не понятно когда этот метод onProductUpdate() и где вызывать
+      let productCount = modalBody.querySelector(`[data-product-id="${productId}"] .cart-counter__count`);
+
+      let productPrice = modalBody.querySelector(`[data-product-id="${productId}"] .cart-product__price`);
+
+      let infoPrice = modalBody.querySelector(`.cart-buttons__info-price`);
     }
   }
 
   onSubmit(event) {
-    // ...ваш код
-  }
+    event.preventDefault();
 
-  _onPlusButtonClick = () => {
-    console.log('Plus Clicked!');
-  }
+    const modalTitle = document.querySelector('.modal__title');
+    const modalBody = document.querySelector('.modal__body');
+    const form = event.currentTarget;
+    const submitButton = form.querySelector('[type="submit"]');
+    submitButton.classList.add('is-loading');
 
-  _onMinusButtonClick = () => {
-    console.log('Minus Clicked!');
+    console.log(form);
+
+    const formData = new FormData(form);
+
+    const responseReceived = fetch('https://httpbin.org/post', {
+      body: formData,
+      method: 'POST',
+    });
+
+    responseReceived.then(response => {
+      modalTitle.innerHTML = 'Success!';
+      modalBody.innerHTML = `
+      <div class="modal__body-inner">
+        <p>
+          Order successful! Your order is being cooked :) <br>
+          We’ll notify you about delivery time shortly.<br>
+          <img src="/assets/images/delivery.gif">
+        </p>
+      </div>
+      `;
+
+      ////------------------- Не понимаю как тут удалить всё и обновить иконку корзины --------------////
+      this.cartItems = [];
+      this.cartIcon.update(this);
+
+      console.log(response);
+      console.log(this.cartItems);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   }
 
   addEventListeners() {
     this.cartIcon.elem.onclick = () => this.renderModal();
   }
+
+  // Private Helpers for Class
+
+  _findProductByName = (product) => {
+    return this.cartItems.find(item => item.product.name === product.name);
+  };
+
+  _findProductById = (productId) => {
+    return this.cartItems.find(item => item.product.id === productId);
+  };
+
+  _findProductIndexById = (productId) => {
+    return this.cartItems.findIndex(item => item.product.id === productId);
+  };
+
+  _inModalButtonsController = (buttons) => {
+    const onPlusButtonClick = (e) => {
+      const productId = e.target.closest('[data-product-id]').dataset.productId;
+      this.updateProductCount(productId, 1);
+    };
+
+    const onMinusButtonClick = (e) => {
+      const productId = e.target.closest('[data-product-id]').dataset.productId;
+      this.updateProductCount(productId, -1);
+    };
+
+    for (const button of buttons) {
+      if (button.classList.contains('cart-counter__button_plus')) {
+        button.addEventListener('click', onPlusButtonClick);
+      }
+      if (button.classList.contains('cart-counter__button_minus')) {
+        button.addEventListener('click', onMinusButtonClick);
+      }
+    }
+  };
 }
 
