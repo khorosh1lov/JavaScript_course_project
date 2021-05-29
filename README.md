@@ -1,4 +1,3 @@
-# Задачник для курса "JavaScript/DOM/Интерфейсы" для новичков
+# Exercises and practice for the "JavaScript/DOM/Interfaces" Course
 
-Включает в себя задачи для тренировки и учебный проект.
-
+Includes training tasks and course project.
